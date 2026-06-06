@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Bel Sekolah Otomatis - SMPN Purworejo</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome untuk icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header/Navbar */
+        .navbar-custom {
+            background: linear-gradient(90deg, var(--primary-color) 0%, #34495e 100%);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95) 0%, rgba(52, 73, 94, 0.95) 100%),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="1200" height="600" fill="rgba(44,62,80,0.95)"/><rect width="1200" height="600" fill="url(%23grid)" /></svg>');
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(30px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.8s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            animation: slideUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-buttons {
+            animation: slideUp 0.8s ease 0.4s both;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            border: none;
+            padding: 12px 35px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-secondary-custom {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 35px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary-custom:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--secondary-color);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: linear-gradient(135deg, var(--success-color) 0%, #229954 100%);
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #d68910 100%);
+        }
+
+        .feature-card:nth-child(4) .feature-icon {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #c0392b 100%);
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .feature-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Dashboard Status Section */
+        .dashboard-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-card h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge-active {
+            background: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-badge-inactive {
+            background: rgba(189, 195, 199, 0.3);
+            color: #7f8c8d;
+        }
+
+        .status-time {
+            color: #95a5a6;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Stats Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 40px 20px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .feature-card {
+                margin-bottom: 20px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .hero-buttons .btn {
+                margin: 10px 0;
+            }
+        }
+
+        /* Pulse Animation untuk status aktif */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#home">
+                <i class="fas fa-bell"></i>
+                <span>BEL OTOMATIS</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Fitur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="panduan.html" target="_blank"><i class="fas fa-book me-1"></i>Panduan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Kontak</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">Sistem Bel Sekolah Otomatis</h1>
+            <p class="hero-subtitle">SMPN Purworejo - Manajemen Jadwal Bel yang Efisien dan Terintegrasi</p>
+            <div class="hero-buttons d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#dashboard" class="btn btn-primary-custom">
+                    <i class="fas fa-tachometer-alt"></i> Buka Dashboard
+                </a>
+                <a href="#features" class="btn btn-secondary-custom">
+                    <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
+                </a>
+                <a href="panduan.html" target="_blank" class="btn btn-secondary-custom">
+                    <i class="fas fa-book"></i> Panduan Perakitan
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 class="section-title">Fitur Utama</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="feature-title">Jadwal Otomatis</h3>
+                        <p class="feature-text">Sistem bel berjalan otomatis sesuai jadwal yang telah ditentukan tanpa intervensi manual.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Real-time Monitoring</h3>
+                        <p class="feature-text">Pantau status bel sekolah secara real-time dengan notifikasi langsung di dashboard.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h3 class="feature-title">Manajemen Fleksibel</h3>
+                        <p class="feature-text">Atur jadwal bel sesuai kebutuhan sekolah dengan interface yang user-friendly.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="feature-title">Laporan & Analitik</h3>
+                        <p class="feature-text">Dapatkan laporan detail tentang jadwal bel dan keberhasilan sistem sepanjang waktu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="container">
+            <h2 class="section-title">Status Sistem</h2>
+            <div class="row">
+                <div class="col-lg-8" id="status-list">
+                    <!-- Dynamic status cards will be inserted here -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Menghubungkan ke sistem bel...</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="stat-box mb-3">
+                        <div class="stat-number" id="stat-total-schedules">-</div>
+                        <div class="stat-label">Total Jadwal Bel</div>
+                    </div>
+                    <div class="stat-box mb-3">
+                        <div class="stat-number" id="stat-system-status" style="color: var(--success-color);">-</div>
+                        <div class="stat-label">Sistem Operasional</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="stat-wifi-signal" style="color: var(--warning-color);">-</div>
+                        <div class="stat-label">Koneksi Wi-Fi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-container mt-5">
+                <div class="stat-box">
+                    <h5 style="color: var(--primary-color); margin-bottom: 10px;">Bel Hari Ini</h5>
+                    <div class="stat-number" id="stat-bells-today" style="color: var(--secondary-color);">-</div>
+                    <div class="stat-label">Total Pembunyian</div>
+                </div>
+                <div class="stat-box">
+                    <h5 style="color: var(--primary-color); margin-bottom: 10px;">Keberhasilan</h5>
+                    <div class="stat-number" id="stat-success-rate" style="color: var(--success-color);">-</div>
+                    <div class="stat-label">Bel Berhasil Dibunyikan</div>
+                </div>
+                <div class="stat-box">
+                    <h5 style="color: var(--primary-color); margin-bottom: 10px;">Uptime Sistem</h5>
+                    <div class="stat-number" id="stat-uptime" style="color: var(--warning-color);">-</div>
+                    <div class="stat-label">Waktu Operasional</div>
+                </div>
+                <div class="stat-box">
+                    <h5 style="color: var(--primary-color); margin-bottom: 10px;">Terakhir Aktif</h5>
+                    <div class="stat-label" id="stat-last-active" style="color: var(--secondary-color); font-weight: bold; margin-top: 20px;">-</div>
+                </div>
+            </div>
+
+            <!-- Schedule Management Card -->
+            <div class="card mt-5 shadow border-0" style="border-radius: 15px;">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center" style="border-top-left-radius: 15px; border-top-right-radius: 15px; border-bottom: 1px solid #eee;">
+                    <h4 class="m-0 text-primary-color" style="font-weight: 700;">
+                        <i class="fas fa-calendar-alt me-2 text-primary"></i>Manajemen Jadwal Bel
+                    </h4>
+                    <button class="btn btn-primary-custom btn-sm px-4 py-2" onclick="openAddScheduleModal()">
+                        <i class="fas fa-plus me-1"></i> Tambah Jadwal
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Nama Bel</th>
+                                    <th>Waktu</th>
+                                    <th>Hari Aktif</th>
+                                    <th>Lagu/Track</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schedules-table-body">
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">Memuat jadwal...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Control & Settings Panel -->
+            <div class="row mt-4">
+                <!-- Manual Control -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow border-0" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title text-primary-color mb-3" style="font-weight: 700;">
+                                <i class="fas fa-play-circle me-2 text-danger"></i>Bunyikan Bel Manual
+                            </h5>
+                            <p class="text-muted small">Pilih lagu/track suara bel di bawah ini untuk membunyikan bel sekolah secara langsung secara instan.</p>
+                            
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold">Folder MP3</label>
+                                    <input type="number" id="manual-folder" class="form-control" value="1" min="1" max="99">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold">File MP3 (Track)</label>
+                                    <input type="number" id="manual-file" class="form-control" value="1" min="1" max="255">
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-danger w-100 mt-4 py-3 fw-bold" onclick="triggerManualBell()" style="border-radius: 30px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);">
+                                <i class="fas fa-volume-up me-2"></i>BUNYIKAN SEKARANG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Settings -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow border-0" style="border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title text-primary-color mb-3" style="font-weight: 700;">
+                                <i class="fas fa-tools me-2 text-warning"></i>Pengaturan Sistem
+                            </h5>
+                            
+                            <!-- RTC Time -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="small fw-bold">Waktu Alat (RTC):</span>
+                                    <span id="rtc-time-display" class="badge bg-dark fs-6 font-monospace px-3 py-2">00:00:00</span>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm w-100 py-2" onclick="syncTime()" style="border-radius: 20px;">
+                                    <i class="fas fa-sync me-1"></i> Sinkronkan dengan Waktu Browser/PC
+                                </button>
+                            </div>
+                            
+                            <hr class="my-3">
+                            
+                            <!-- WiFi Configuration -->
+                            <form id="wifi-form" onsubmit="saveWiFiSettings(event)">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">SSID Wi-Fi</label>
+                                    <input type="text" id="wifi-ssid" class="form-control form-control-sm" placeholder="Nama Wi-Fi Sekolah" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Password Wi-Fi</label>
+                                    <input type="password" id="wifi-pass" class="form-control form-control-sm" placeholder="Password Wi-Fi">
+                                </div>
+                                <button type="submit" class="btn btn-warning btn-sm text-white fw-bold w-100 py-2" style="border-radius: 20px;">
+                                    <i class="fas fa-save me-1"></i> Simpan Pengaturan Wi-Fi
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Add/Edit Schedule -->
+    <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header bg-light" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                    <h5 class="modal-title fw-bold text-primary-color" id="scheduleModalLabel">Tambah Jadwal Bel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="schedule-form" onsubmit="saveSchedule(event)">
+                    <div class="modal-body p-4">
+                        <input type="hidden" id="schedule-id" value="0">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nama Jadwal / Bel</label>
+                            <input type="text" id="schedule-name" class="form-control shadow-sm" placeholder="Contoh: Bel Masuk Kelas" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Waktu (Jam & Menit)</label>
+                            <input type="time" id="schedule-time" class="form-control shadow-sm" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Hari Aktif</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="day-checkbox-wrapper">
+                                    <input class="btn-check day-checkbox" type="checkbox" id="day-1" value="1">
+                                    <label class="btn btn-outline-secondary btn-sm px-3" for="day-1">Sen</label>
+                                </div>
+                                <div class="day-checkbox-wrapper">
+                                    <input class="btn-check day-checkbox" type="checkbox" id="day-2" value="2">
+                                    <label class="btn btn-outline-secondary btn-sm px-3" for="day-2">Sel</label>
+                                </div>
+                                <div class="day-checkbox-wrapper">
+                                    <input class="btn-check day-checkbox" type="checkbox" id="day-3" value="3">
+                                    <label class="btn btn-outline-secondary btn-sm px-3" for="day-3">Rab</label>
+                                </div>
+                                <div class="day-checkbox-wrapper">
+                                    <input class="btn-check day-checkbox" type="checkbox" id="day-4" value="4">
+                                    <label class="btn btn-outline-secondary btn-sm px-3" for="day-4">Kam</label>
+                                </div>
+                                <div class="day-checkbox-wrapper">
+                                    <input class="btn-check day-checkbox" type="checkbox" id="day-5" value="5">
+                                    <label class="btn btn-outline-secondary btn-sm px-3" for="day-5">Jum</label>
+                                </div>
+                                <div class="day-checkbox-wrapper">
+                                    <input class="btn-check day-checkbox" type="checkbox" id="day-6" value="6">
+                                    <label class="btn btn-outline-secondary btn-sm px-3" for="day-6">Sab</label>
+                                </div>
+                                <div class="day-checkbox-wrapper">
+                                    <input class="btn-check day-checkbox" type="checkbox" id="day-7" value="7">
+                                    <label class="btn btn-outline-secondary btn-sm px-3" for="day-7">Min</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mb-3">
+                           <div class="col-6">
+                               <label class="form-label small fw-bold">Folder MP3</label>
+                               <input type="number" id="schedule-folder" class="form-control shadow-sm" value="1" min="1" max="99" required>
+                           </div>
+                           <div class="col-6">
+                               <label class="form-label small fw-bold">File MP3 (Track)</label>
+                               <input type="number" id="schedule-file" class="form-control shadow-sm" value="1" min="1" max="255" required>
+                           </div>
+                        </div>
+                        
+                        <div class="form-check form-switch mt-3">
+                           <input class="form-check-input" type="checkbox" id="schedule-active" checked>
+                           <label class="form-check-label small fw-bold" for="schedule-active">Jadwal Aktif</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light" style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+                       <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" style="border-radius: 20px;">Batal</button>
+                       <button type="submit" class="btn btn-primary-custom px-4" style="border-radius: 20px;">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact/Info Section -->
+    <section class="features-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Hubungi Kami</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Lokasi</h3>
+                        <p class="feature-text">SMPN Purworejo<br>Jl. Pendidikan No. 1<br>Purworejo, Jawa Tengah</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3 class="feature-title">Telepon</h3>
+                        <p class="feature-text">(0275) 321-456<br>Support: 08XX-XXXX-XXXX<br>Senin-Jumat: 07:00-15:30</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 class="feature-title">Email</h3>
+                        <p class="feature-text">info@smpnpurworejo.sch.id<br>support@smpnpurworejo.sch.id<br>Respon: 24 jam kerja</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Sistem Bel Sekolah Otomatis - SMPN Purworejo</p>
+            <p>Dirancang untuk meningkatkan efisiensi manajemen waktu pembelajaran</p>
+            <div class="footer-links">
+                <a href="#home">Beranda</a>
+                <a href="#features">Fitur</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#contact">Kontak</a>
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 20px; opacity: 0.8;">
+                Dikembangkan dengan <i class="fas fa-heart" style="color: var(--accent-color);"></i> untuk SMPN Purworejo
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS / API Connection & Simulation Fallback -->
+    <script>
+        // Smooth scroll untuk navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Config & State
+        let useMock = false;
+        let scheduleModalObj = null;
+        let systemTimeInterval = null;
+        let systemTime = new Date();
+        const DAYS_INDONESIAN = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        
+        // DOM Elements
+        const statusList = document.getElementById('status-list');
+        const schedulesTableBody = document.getElementById('schedules-table-body');
+        const rtcTimeDisplay = document.getElementById('rtc-time-display');
+        const statTotalSchedules = document.getElementById('stat-total-schedules');
+        const statSystemStatus = document.getElementById('stat-system-status');
+        const statWifiSignal = document.getElementById('stat-wifi-signal');
+        const statBellsToday = document.getElementById('stat-bells-today');
+        const statSuccessRate = document.getElementById('stat-success-rate');
+        const statUptime = document.getElementById('stat-uptime');
+        const statLastActive = document.getElementById('stat-last-active');
+
+        // Modal Form Elements
+        const scheduleForm = document.getElementById('schedule-form');
+        const scheduleIdInput = document.getElementById('schedule-id');
+        const scheduleNameInput = document.getElementById('schedule-name');
+        const scheduleTimeInput = document.getElementById('schedule-time');
+        const scheduleFolderInput = document.getElementById('schedule-folder');
+        const scheduleFileInput = document.getElementById('schedule-file');
+        const scheduleActiveInput = document.getElementById('schedule-active');
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            scheduleModalObj = new bootstrap.Modal(document.getElementById('scheduleModal'));
+            
+            // Check if mock mode is forced via URL
+            if (window.location.protocol === 'file:' || window.location.search.includes('mock=true')) {
+                useMock = true;
+                console.log("Menjalankan website dalam mode simulasi offline.");
+                initMockData();
+            }
+            
+            // Initial Load
+            refreshData();
+            
+            // Periodical poll status (setiap 3 detik)
+            setInterval(pollStatus, 3000);
+        });
+
+        // Mock Database Initialization
+        function initMockData() {
+            if (!localStorage.getItem('bel_schedules')) {
+                const defaultSchedules = [
+                    { id: 1, name: "Bel Masuk Pagi", time: "07:00", days: [1,2,3,4,5,6], folder: 1, file: 1, active: 1 },
+                    { id: 2, name: "Bel Masuk Jam Pelajaran", time: "07:30", days: [1,2,3,4,5,6], folder: 1, file: 2, active: 1 },
+                    { id: 3, name: "Bel Istirahat Pertama", time: "10:00", days: [1,2,3,4,5], folder: 1, file: 3, active: 1 },
+                    { id: 4, name: "Bel Pulang Sekolah", time: "14:00", days: [1,2,3,4,5], folder: 1, file: 4, active: 1 }
+                ];
+                localStorage.setItem('bel_schedules', JSON.stringify(defaultSchedules));
+            }
+            if (!localStorage.getItem('bel_stats')) {
+                const defaultStats = {
+                    bells_today: 12,
+                    success_rate: "12/12",
+                    uptime: "99.8%",
+                    last_active: "Hari ini - 14:00 WIB",
+                    system_status: "OK",
+                    wifi_ssid: "SMPN_Purworejo_WIFI",
+                    wifi_signal: "Kuat (85%)"
+                };
+                localStorage.setItem('bel_stats', JSON.stringify(defaultStats));
+            }
+        }
+
+        // Mock API Handler
+        function mockApi(url, options = {}) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const schedules = JSON.parse(localStorage.getItem('bel_schedules')) || [];
+                    const stats = JSON.parse(localStorage.getItem('bel_stats')) || {};
+                    
+                    if (url.includes('api/status')) {
+                        // Update simulated clock time
+                        systemTime.setSeconds(systemTime.getSeconds() + 3);
+                        const timeStr = systemTime.toTimeString().split(' ')[0];
+                        resolve({
+                            time: timeStr,
+                            date: systemTime.toISOString().split('T')[0],
+                            day: systemTime.getDay(),
+                            system_status: stats.system_status,
+                            wifi_ssid: stats.wifi_ssid,
+                            wifi_signal: stats.wifi_signal,
+                            bells_today: stats.bells_today,
+                            success_rate: stats.success_rate,
+                            uptime: stats.uptime,
+                            last_active: stats.last_active,
+                            total_schedules: schedules.length
+                        });
+                    } else if (url.includes('api/schedules/save')) {
+                        const body = JSON.parse(options.body);
+                        if (body.id === 0) {
+                            body.id = schedules.length > 0 ? Math.max(...schedules.map(s => s.id)) + 1 : 1;
+                            schedules.push(body);
+                        } else {
+                            const idx = schedules.findIndex(s => s.id === body.id);
+                            if (idx !== -1) schedules[idx] = body;
+                        }
+                        localStorage.setItem('bel_schedules', JSON.stringify(schedules));
+                        resolve({ status: "success", message: "Jadwal berhasil disimpan" });
+                    } else if (url.includes('api/schedules/delete')) {
+                        const body = JSON.parse(options.body);
+                        const newSchedules = schedules.filter(s => s.id !== body.id);
+                        localStorage.setItem('bel_schedules', JSON.stringify(newSchedules));
+                        resolve({ status: "success", message: "Jadwal berhasil dihapus" });
+                    } else if (url.includes('api/schedules')) {
+                        resolve(schedules);
+                    } else if (url.includes('api/play')) {
+                        const body = JSON.parse(options.body);
+                        // Simulate sound play via web audio API if possible
+                        playBeepSound();
+                        resolve({ status: "success", message: `Memutar folder ${body.folder} track ${body.file}` });
+                    } else if (url.includes('api/settings/time')) {
+                        const body = JSON.parse(options.body);
+                        systemTime = new Date(body.datetime);
+                        resolve({ status: "success", message: "Waktu RTC disinkronkan" });
+                    } else if (url.includes('api/settings/wifi')) {
+                        const body = JSON.parse(options.body);
+                        stats.wifi_ssid = body.ssid;
+                        stats.wifi_signal = "Tersambung";
+                        localStorage.setItem('bel_stats', JSON.stringify(stats));
+                        resolve({ status: "success", message: "Koneksi Wi-Fi disimpan" });
+                    } else {
+                        reject({ status: "error", message: "Endpoint tidak ditemukan" });
+                    }
+                }, 100);
+            });
+        }
+
+        // Web Audio API simulation beep
+        function playBeepSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Ring sound sequence (Beep Beep)
+                const playBeep = (time, duration, frequency) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(frequency, time);
+                    
+                    gain.gain.setValueAtTime(0.3, time);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + duration - 0.05);
+                    
+                    osc.start(time);
+                    osc.stop(time + duration);
+                };
+                
+                const now = audioCtx.currentTime;
+                playBeep(now, 0.4, 880);
+                playBeep(now + 0.5, 0.4, 880);
+                playBeep(now + 1.0, 0.8, 1200);
+            } catch (e) {
+                console.log("Buzzer web audio simulator: Beep!");
+            }
+        }
+
+        // Universal Fetch with Automatic Fallback
+        async function apiFetch(url, options = {}) {
+            if (useMock) {
+                return mockApi(url, options);
+            }
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 seconds timeout
+                
+                const fetchOptions = { ...options, signal: controller.signal };
+                const response = await fetch(url, fetchOptions);
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) throw new Error('API Error');
+                return await response.json();
+            } catch (e) {
+                console.warn("Koneksi API Gagal, beralih ke Mode Simulasi Offline:", e);
+                useMock = true;
+                initMockData();
+                return mockApi(url, options);
+            }
+        }
+
+        // Poll Status (every 3 seconds)
+        async function pollStatus() {
+            try {
+                const status = await apiFetch('api/status');
+                
+                // Update RTC clock
+                if (status.time) {
+                    rtcTimeDisplay.textContent = status.time;
+                    // Keep track locally to avoid jumpiness
+                    const [h, m, s] = status.time.split(':').map(Number);
+                    systemTime.setHours(h, m, s);
+                }
+                
+                // Update quick stats boxes
+                statTotalSchedules.textContent = status.total_schedules;
+                statSystemStatus.textContent = status.system_status;
+                statWifiSignal.textContent = status.wifi_signal || status.wifi_ssid || "Terhubung";
+                statBellsToday.textContent = status.bells_today;
+                statSuccessRate.textContent = status.success_rate;
+                statUptime.textContent = status.uptime;
+                statLastActive.textContent = status.last_active;
+                
+            } catch (e) {
+                console.error("Gagal melakukan polling status:", e);
+            }
+        }
+
+        // Refresh All Data (called on load & updates)
+        async function refreshData() {
+            await pollStatus();
+            await loadSchedules();
+        }
+
+        // Load and Render Schedules
+        async function loadSchedules() {
+            try {
+                const schedules = await apiFetch('api/schedules');
+                
+                // Render schedules table
+                schedulesTableBody.innerHTML = '';
+                if (schedules.length === 0) {
+                    schedulesTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Belum ada jadwal tersimpan. Silakan klik 'Tambah Jadwal'.</td></tr>`;
+                } else {
+                    // Sort schedules by time
+                    schedules.sort((a, b) => a.time.localeCompare(b.time));
+                    
+                    schedules.forEach(schedule => {
+                        const tr = document.createElement('tr');
+                        
+                        // Parse active days
+                        const daysText = schedule.days.map(d => DAYS_INDONESIAN[d === 7 ? 0 : d]).join(', ');
+                        
+                        // Toggle active badge classes
+                        const activeChecked = schedule.active ? 'checked' : '';
+                        
+                        tr.innerHTML = `
+                            <td class="ps-4 fw-semibold text-primary-color">${escapeHtml(schedule.name)}</td>
+                            <td class="font-monospace fw-bold text-secondary">${schedule.time} WIB</td>
+                            <td class="text-muted small">${daysText}</td>
+                            <td><span class="badge bg-secondary">F${schedule.folder}-T${schedule.file}</span></td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" ${activeChecked} onchange="toggleScheduleActive(${schedule.id}, this.checked)">
+                                </div>
+                            </td>
+                            <td class="text-end pe-4">
+                                <button class="btn btn-outline-primary btn-sm me-1 px-3" onclick="editSchedule(${JSON.stringify(schedule).replace(/"/g, '&quot;')})" style="border-radius:15px;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm px-3" onclick="deleteSchedule(${schedule.id})" style="border-radius:15px;">
+                                    <i class="fas fa-trash-alt"></i> Hapus
+                                </button>
+                            </td>
+                        `;
+                        schedulesTableBody.appendChild(tr);
+                    });
+                }
+                
+                // Render dashboard status list (top section of screen)
+                statusList.innerHTML = '';
+                const activeSchedules = schedules.filter(s => s.active);
+                
+                if (activeSchedules.length === 0) {
+                    statusList.innerHTML = `
+                        <div class="status-card text-center py-4">
+                            <h5><i class="fas fa-bell-slash text-muted me-2"></i>Tidak ada bel aktif</h5>
+                            <p class="status-time">Tambahkan jadwal di panel manajemen di bawah</p>
+                        </div>
+                    `;
+                } else {
+                    // Get next upcoming bell
+                    const timeNowStr = systemTime.toTimeString().split(' ')[0].substring(0, 5); // "HH:MM"
+                    
+                    // Sort active ones to find nearest
+                    activeSchedules.forEach(schedule => {
+                        const isUpcoming = schedule.time >= timeNowStr;
+                        const card = document.createElement('div');
+                        card.className = 'status-card';
+                        if (isUpcoming) {
+                            card.style.borderLeftColor = 'var(--success-color)';
+                        }
+                        
+                        const daysText = schedule.days.map(d => DAYS_INDONESIAN[d === 7 ? 0 : d]).join(', ');
+                        
+                        card.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5><i class="fas fa-bell text-primary"></i> ${escapeHtml(schedule.name)}</h5>
+                                    <p class="status-time">Jadwal: <strong class="text-dark font-monospace">${schedule.time} WIB</strong> (Hari: ${daysText})</p>
+                                </div>
+                                <span class="status-badge status-badge-active ${isUpcoming ? 'pulse' : ''}" style="${!isUpcoming ? 'background:rgba(52,152,219,0.1); color:var(--secondary-color);' : ''}">
+                                    <i class="fas ${isUpcoming ? 'fa-clock' : 'fa-check-circle'}"></i> ${isUpcoming ? 'Mendatang' : 'Aktif'}
+                                </span>
+                            </div>
+                        `;
+                        statusList.appendChild(card);
+                    });
+                }
+            } catch (e) {
+                console.error("Gagal memuat daftar jadwal bel:", e);
+            }
+        }
+
+        // Toggle Active Schedule
+        async function toggleScheduleActive(id, isActive) {
+            try {
+                // Fetch schedules to get full item
+                const schedules = await apiFetch('api/schedules');
+                const schedule = schedules.find(s => s.id === id);
+                if (schedule) {
+                    schedule.active = isActive ? 1 : 0;
+                    const res = await apiFetch('api/schedules/save', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(schedule)
+                    });
+                    if (res.status === 'success') {
+                        refreshData();
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal mengubah status aktif jadwal:", e);
+            }
+        }
+
+        // Open Modal to Add Schedule
+        function openAddScheduleModal() {
+            document.getElementById('scheduleModalLabel').textContent = 'Tambah Jadwal Bel';
+            scheduleIdInput.value = '0';
+            scheduleForm.reset();
+            
+            // Uncheck all days by default
+            document.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
+            
+            // Default active
+            scheduleActiveInput.checked = true;
+            
+            scheduleModalObj.show();
+        }
+
+        // Open Modal to Edit Schedule
+        function editSchedule(schedule) {
+            document.getElementById('scheduleModalLabel').textContent = 'Edit Jadwal Bel';
+            scheduleIdInput.value = schedule.id;
+            scheduleNameInput.value = schedule.name;
+            scheduleTimeInput.value = schedule.time;
+            scheduleFolderInput.value = schedule.folder;
+            scheduleFileInput.value = schedule.file;
+            scheduleActiveInput.checked = schedule.active === 1;
+            
+            // Check days
+            document.querySelectorAll('.day-checkbox').forEach(cb => {
+                const val = parseInt(cb.value);
+                cb.checked = schedule.days.includes(val);
+            });
+            
+            scheduleModalObj.show();
+        }
+
+        // Save Schedule Form Handler
+        async function saveSchedule(event) {
+            event.preventDefault();
+            
+            // Gather selected days
+            const days = [];
+            document.querySelectorAll('.day-checkbox:checked').forEach(cb => {
+                days.push(parseInt(cb.value));
+            });
+            
+            if (days.length === 0) {
+                alert('Silakan pilih minimal satu hari aktif!');
+                return;
+            }
+            
+            const scheduleData = {
+                id: parseInt(scheduleIdInput.value),
+                name: scheduleNameInput.value,
+                time: scheduleTimeInput.value,
+                days: days,
+                folder: parseInt(scheduleFolderInput.value),
+                file: parseInt(scheduleFileInput.value),
+                active: scheduleActiveInput.checked ? 1 : 0
+            };
+            
+            try {
+                const res = await apiFetch('api/schedules/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(scheduleData)
+                });
+                
+                if (res.status === 'success') {
+                    scheduleModalObj.hide();
+                    refreshData();
+                } else {
+                    alert('Gagal menyimpan: ' + res.message);
+                }
+            } catch (e) {
+                console.error("Gagal memproses simpan jadwal:", e);
+                alert('Terjadi kesalahan jaringan.');
+            }
+        }
+
+        // Delete Schedule
+        async function deleteSchedule(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus jadwal bel ini?')) return;
+            
+            try {
+                const res = await apiFetch('api/schedules/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+                
+                if (res.status === 'success') {
+                    refreshData();
+                } else {
+                    alert('Gagal menghapus: ' + res.message);
+                }
+            } catch (e) {
+                console.error("Gagal menghapus jadwal:", e);
+            }
+        }
+
+        // Trigger Manual Bell Play
+        async function triggerManualBell() {
+            const folder = parseInt(document.getElementById('manual-folder').value);
+            const file = parseInt(document.getElementById('manual-file').value);
+            
+            try {
+                const res = await apiFetch('api/play', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ folder, file })
+                });
+                
+                if (res.status === 'success') {
+                    alert('Sinyal bel manual dikirim: ' + res.message);
+                } else {
+                    alert('Gagal membunyikan: ' + res.message);
+                }
+            } catch (e) {
+                console.error("Gagal memicu bel manual:", e);
+            }
+        }
+
+        // Sync local time with RTC clock
+        async function syncTime() {
+            const now = new Date();
+            // Format datetime: "2026-06-06T10:35:00"
+            const tzOffset = now.getTimezoneOffset() * 60000; // offset in milliseconds
+            const localISOTime = (new Date(now.getTime() - tzOffset)).toISOString().slice(0, 19);
+            
+            try {
+                const res = await apiFetch('api/settings/time', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ datetime: localISOTime })
+                });
+                
+                if (res.status === 'success') {
+                    alert('Waktu alat berhasil disinkronkan dengan Browser!');
+                    refreshData();
+                } else {
+                    alert('Gagal mensinkronkan waktu: ' + res.message);
+                }
+            } catch (e) {
+                console.error("Gagal mengirim perintah sinkronisasi waktu:", e);
+            }
+        }
+
+        // Save Wi-Fi configuration
+        async function saveWiFiSettings(event) {
+            event.preventDefault();
+            const ssid = document.getElementById('wifi-ssid').value;
+            const pass = document.getElementById('wifi-pass').value;
+            
+            try {
+                const res = await apiFetch('api/settings/wifi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ssid, password: pass })
+                });
+                
+                if (res.status === 'success') {
+                    alert('Pengaturan Wi-Fi berhasil disimpan! Alat akan mencoba terhubung.');
+                    refreshData();
+                } else {
+                    alert('Gagal menyimpan pengaturan WiFi: ' + res.message);
+                }
+            } catch (e) {
+                console.error("Gagal menyimpan WiFi:", e);
+            }
+        }
+
+        // Helper: Escape HTML string to prevent XSS
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+    </script>
+</body>
+</html>

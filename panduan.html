@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Perakitan & Penggunaan - Bel Sekolah Otomatis</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome untuk icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding-bottom: 50px;
+        }
+
+        /* Header/Navbar */
+        .navbar-custom {
+            background: linear-gradient(90deg, var(--primary-color) 0%, #34495e 100%);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateX(-3px);
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
+            color: white;
+            padding: 20px 25px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header-custom i {
+            color: var(--secondary-color);
+        }
+
+        .card-body-custom {
+            padding: 30px;
+        }
+
+        .badge-pin {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: rgba(231, 76, 60, 0.08);
+            border-left: 5px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .warning-box h6 {
+            color: var(--accent-color);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .tip-box {
+            background: rgba(243, 156, 18, 0.08);
+            border-left: 5px solid var(--warning-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .tip-box h6 {
+            color: var(--warning-color);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .steps-list {
+            list-style: none;
+        }
+
+        .steps-list li {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .steps-content {
+            flex: 1;
+            padding-top: 2px;
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top mb-5">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-bell"></i>
+                <span>BEL OTOMATIS</span>
+            </a>
+            <a href="index.html" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-center text-white mb-5">
+            <h1 style="font-weight: 800; font-size: 2.8rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Panduan Perakitan & Penggunaan Alat</h1>
+            <p class="lead" style="opacity: 0.9;">Ikuti langkah-langkah di bawah untuk merakit hardware dan mengunggah program ke mikrokontroler Anda.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                
+                <!-- Section 1: Wiring NodeMCU ESP8266 -->
+                <div class="card card-custom">
+                    <div class="card-header-custom">
+                        <i class="fas fa-microchip"></i>
+                        <span>1. Skema Kabel NodeMCU ESP8266</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="tip-box">
+                            <h6><i class="fas fa-info-circle"></i> Info Pin Bebas Konflik:</h6>
+                            <p class="m-0 small">Secara default, pin I2C untuk RTC DS3231 berada di D1 (SCL) dan D2 (SDA). Oleh karena itu, jalur komunikasi ke DFPlayer Mini telah disesuaikan ke pin <strong>D5 (RX)</strong> dan <strong>D6 (TX)</strong>, serta pemicu Relay ke pin <strong>D7</strong> guna menghindari bentrokan sinyal data.</p>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Perangkat Pendukung</th>
+                                        <th>Pin Perangkat</th>
+                                        <th>Pin NodeMCU ESP8266</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="4" class="fw-bold"><i class="far fa-clock text-primary me-2"></i>DS3231 RTC</td>
+                                        <td>VCC</td>
+                                        <td><span class="badge bg-danger badge-pin">3V3</span></td>
+                                        <td>Catu daya RTC</td>
+                                    </tr>
+                                    <tr>
+                                        <td>GND</td>
+                                        <td><span class="badge bg-dark badge-pin">GND</span></td>
+                                        <td>Ground</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SDA</td>
+                                        <td><span class="badge bg-primary badge-pin">D2 (GPIO 4)</span></td>
+                                        <td>Jalur data komunikasi I2C</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SCL</td>
+                                        <td><span class="badge bg-primary badge-pin">D1 (GPIO 5)</span></td>
+                                        <td>Jalur clock komunikasi I2C</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="4" class="fw-bold"><i class="fas fa-music text-danger me-2"></i>DFPlayer Mini</td>
+                                        <td>VCC</td>
+                                        <td><span class="badge bg-danger badge-pin">VIN / 5V</span></td>
+                                        <td>Catu daya Audio (Ambil dari daya USB 5V)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>GND</td>
+                                        <td><span class="badge bg-dark badge-pin">GND</span></td>
+                                        <td>Ground</td>
+                                    </tr>
+                                    <tr>
+                                        <td>RX</td>
+                                        <td><span class="badge bg-warning badge-pin">D6 (GPIO 12)</span></td>
+                                        <td>Wajib gunakan <strong>Resistor 1K Ohm</strong> secara seri ke pin RX DFPlayer</td>
+                                    </tr>
+                                    <tr>
+                                        <td>TX</td>
+                                        <td><span class="badge bg-warning badge-pin">D5 (GPIO 14)</span></td>
+                                        <td>Jalur kirim audio dari DFPlayer ke NodeMCU</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="3" class="fw-bold"><i class="fas fa-toggle-on text-success me-2"></i>Relay Modul (Opsional)</td>
+                                        <td>VCC</td>
+                                        <td><span class="badge bg-danger badge-pin">VIN / 3V3</span></td>
+                                        <td>Daya kumparan relay</td>
+                                    </tr>
+                                    <tr>
+                                        <td>GND</td>
+                                        <td><span class="badge bg-dark badge-pin">GND</span></td>
+                                        <td>Ground</td>
+                                    </tr>
+                                    <tr>
+                                        <td>IN (Signal)</td>
+                                        <td><span class="badge bg-success badge-pin">D7 (GPIO 13)</span></td>
+                                        <td>Pin Kontrol (Relay aktif otomatis saat bel berbunyi)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="warning-box mt-4">
+                            <h6><i class="fas fa-exclamation-triangle"></i> PERHATIAN: Resistor 1K Ohm</h6>
+                            <p class="m-0 small">Anda <strong>Wajib</strong> menyolder sebuah Resistor 1K Ohm di antara kabel Pin **D6 NodeMCU** ke pin **RX DFPlayer Mini**. Resistor ini berfungsi untuk meredam noise (dengung kencang) pada speaker dan melindungi modul DFPlayer Mini agar awet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: SD Card Structure -->
+                <div class="card card-custom">
+                    <div class="card-header-custom">
+                        <i class="fas fa-sd-card"></i>
+                        <span>2. Struktur Folder & Lagu pada MicroSD Card</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <p>Modul pemutar MP3 DFPlayer Mini memerlukan format penyimpanan kartu SD yang khusus agar lagu tidak tertukar dan dapat diputar secara presisi:</p>
+                        
+                        <ul class="steps-list mt-4">
+                            <li>
+                                <span class="step-number">1</span>
+                                <div class="steps-content">
+                                    <strong>Format SD Card:</strong>
+                                    <p class="text-muted small">Format kartu memori MicroSD Anda dengan file sistem <strong>FAT32</strong> (gunakan kapasitas maksimal 16GB atau 32GB).</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="step-number">2</span>
+                                <div class="steps-content">
+                                    <strong>Buat Folder "01":</strong>
+                                    <p class="text-muted small">Buatlah sebuah folder baru di dalam MicroSD Anda dengan nama **`01`** (harus terdiri dari dua karakter angka tersebut).</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="step-number">3</span>
+                                <div class="steps-content">
+                                    <strong>Penamaan File Lagu (3 Digit):</strong>
+                                    <p class="text-muted small">Simpan lagu bel sekolah Anda ke dalam folder `01` dan namai lagunya dengan awalan 3 digit angka seperti:</p>
+                                    <div class="border rounded bg-light p-3 font-monospace small">
+                                        /01/001.mp3  -> (Bel Masuk Kelas)<br>
+                                        /01/002.mp3  -> (Bel Pergantian Jam)<br>
+                                        /01/003.mp3  -> (Bel Istirahat)<br>
+                                        /01/004.mp3  -> (Bel Pulang Sekolah)
+                                    </div>
+                                    <p class="text-muted small mt-2">Pada dashboard web jadwal bel, isikan <strong>Folder MP3: 1</strong> dan <strong>File MP3: 1</strong> untuk memicu file `001.mp3` di folder `01`.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 3: Upload Firmware -->
+                <div class="card card-custom">
+                    <div class="card-header-custom">
+                        <i class="fas fa-upload"></i>
+                        <span>3. Langkah Pemrograman & Upload LittleFS</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <h5 class="fw-bold mb-3">A. Cara Upload Kode Arduino</h5>
+                        <ol class="mb-4">
+                            <li>Buka aplikasi **Arduino IDE** pada komputer Anda.</li>
+                            <li>Instal Library pendukung melalui menu **Tools > Manage Libraries...**:
+                                <ul>
+                                    <li><code>ArduinoJson</code> (Oleh Benoit Blanchon)</li>
+                                    <li><code>RTClib</code> (Oleh Adafruit)</li>
+                                    <li><code>DFRobotDFPlayerMini</code> (Oleh DFRobot)</li>
+                                </ul>
+                            </li>
+                            <li>Buka berkas program Arduino:
+                                <ul>
+                                    <li>Buka **`bel_sekolah_nodemcu/bel_sekolah_nodemcu.ino`** (Disarankan: Khusus untuk NodeMCU ESP8266).</li>
+                                    <li>Atau buka **`bel_sekolah/bel_sekolah.ino`** (Mendukung ESP32 & ESP8266 sekaligus).</li>
+                                </ul>
+                            </li>
+                            <li>Pilih board **NodeMCU 1.0 (ESP-12E Module)** di menu *Tools > Board*.</li>
+                            <li>Hubungkan NodeMCU ke PC melalui USB, tentukan port COM yang aktif di menu *Tools > Port*, kemudian tekan tombol **Upload** (panah kanan).</li>
+                        </ol>
+
+                        <h5 class="fw-bold mb-3">B. Cara Upload index.html ke Memori NodeMCU</h5>
+                        <p>Agar NodeMCU dapat menampilkan website saat diakses, file `index.html` harus di-upload ke memori flash internal (LittleFS):</p>
+                        <ol>
+                            <li>Pastikan Anda telah memasang plugin **ESP8266 LittleFS Data Upload Tool** pada Arduino IDE.</li>
+                            <li>Di dalam folder sketch pilihan Anda (`bel_sekolah_nodemcu` atau `bel_sekolah`), buat folder baru bernama **`data`**.</li>
+                            <li>Salin berkas **`index.html`** dari projek Anda ke dalam folder `data` tersebut (sehingga strukturnya menjadi `bel_sekolah_nodemcu/data/index.html` atau `bel_sekolah/data/index.html`).</li>
+                            <li>Tutup **Serial Monitor** pada Arduino IDE agar port COM tidak sibuk.</li>
+                            <li>Di Arduino IDE, klik menu **Tools > ESP8266 LittleFS Data Upload**.</li>
+                            <li>Tunggu hingga proses selesai tertulis *"LittleFS Image Uploaded"*.</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Sistem Bel Sekolah Otomatis - SMPN Purworejo</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

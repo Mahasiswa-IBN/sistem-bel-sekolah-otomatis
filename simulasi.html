@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Hardware - Sistem Bel Sekolah Otomatis</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b 0%, var(--dark-bg) 60%);
+            color: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand i {
+            color: var(--secondary-color);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active-link {
+            color: var(--secondary-color) !important;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        /* Header section */
+        .header-section {
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-weight: 800;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        /* ------------------------------------------
+         * HARDWARE SIMULATOR MODULE STYLING
+         * ------------------------------------------ */
+        .simulation-section {
+            position: relative;
+        }
+
+        .hw-module {
+            position: absolute;
+            border-radius: 8px;
+            background: #1e293b;
+            border: 1px solid #475569;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .hw-module:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
+        }
+
+        .hw-header {
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Pin Dots */
+        .pin-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            left: -10px;
+            top: 5px;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .text-end .pin-dot {
+            left: auto;
+            right: -10px;
+        }
+
+        .pin-dot-bottom {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* LED status */
+        .led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #3f3f46;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .led-red.active {
+            background-color: #ef4444;
+            box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
+        }
+
+        .led-blue.active {
+            background-color: #3b82f6;
+            box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+        }
+
+        .led-green.active {
+            background-color: #22c55e;
+            box-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e;
+        }
+
+        /* Speaker wave animation */
+        @keyframes soundWave {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+
+        .sound-wave {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 2px solid #3b82f6;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .ringing .sound-wave {
+            animation: soundWave 1.2s linear infinite;
+        }
+
+        .ringing #wave-2 {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes vibrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .ringing {
+            animation: vibrate 0.1s linear infinite;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Wires SVG Overlay */
+        .wire {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.85;
+            transition: stroke 0.3s;
+        }
+
+        .wire.active {
+            stroke-dasharray: 6, 6;
+            animation: wireFlow 1s linear infinite;
+        }
+
+        @keyframes wireFlow {
+            to {
+                stroke-dashoffset: -12;
+            }
+        }
+
+        /* Serial Console Lines */
+        .serial-output-line {
+            padding: 3px 0;
+            border-left: 3px solid transparent;
+            padding-left: 8px;
+            margin-bottom: 2px;
+            font-size: 0.8rem;
+        }
+
+        .serial-info {
+            color: #cbd5e1;
+        }
+
+        .serial-success {
+            color: #22c55e;
+        }
+
+        .serial-warn {
+            color: #eab308;
+            border-left-color: #eab308;
+        }
+
+        .serial-error {
+            color: #ef4444;
+            border-left-color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-bell"></i>
+                <span>BEL OTOMATIS</span>
+            </a>
+            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-arrow-left me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active-link" href="simulasi.html"><i class="fas fa-microchip me-1"></i> Simulasi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="panduan.html" target="_blank"><i class="fas fa-book me-1"></i> Panduan</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Title -->
+    <header class="header-section">
+        <div class="container">
+            <h1 class="section-title">Visual Simulator Hardware</h1>
+            <p class="text-muted mb-0">Simulasikan sirkuit fisik NodeMCU ESP8266, RTC DS3231, DFPlayer Mini, Relay, dan Speaker secara interaktif.</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <div class="card bg-dark border-secondary shadow-lg rounded-4 overflow-hidden" style="border-color: #475569 !important;">
+            <div class="card-header bg-black bg-opacity-50 py-3 border-secondary border-bottom" style="border-color: #475569 !important;">
+                <ul class="nav nav-tabs card-header-tabs border-0" id="simTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active text-white border-0 px-4 py-2 me-2" id="circuit-tab" data-bs-toggle="tab" data-bs-target="#circuit-pane" type="button" role="tab" aria-controls="circuit-pane" aria-selected="true" style="border-radius: 8px 8px 0 0; background-color: rgba(255,255,255,0.15);">
+                            <i class="fas fa-microchip me-2 text-info"></i>Sirkuit & Kontrol
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-white border-0 px-4 py-2" id="code-tab" data-bs-toggle="tab" data-bs-target="#code-pane" type="button" role="tab" aria-controls="code-pane" aria-selected="false" style="border-radius: 8px 8px 0 0; background-color: rgba(255,255,255,0.05);">
+                            <i class="fas fa-code me-2 text-warning"></i>Editor Code NodeMCU
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-0" style="background-color: #18181b;">
+                <div class="tab-content" id="simTabContent">
+                    <!-- Tab 1: Circuit Pane -->
+                    <div class="tab-pane fade show active p-4" id="circuit-pane" role="tabpanel" aria-labelledby="circuit-tab" tabindex="0">
+                        <div class="row g-4">
+                            <!-- Left side: Controls and Serial Monitor -->
+                            <div class="col-lg-4 d-flex flex-column gap-3">
+                                <!-- Controls -->
+                                <div class="p-3 rounded-3 bg-black bg-opacity-30 border border-secondary" style="border-color: #3f3f46 !important;">
+                                    <h5 class="fw-bold mb-3 text-info"><i class="fas fa-sliders-h me-2"></i>Kontrol Simulasi</h5>
+                                    
+                                    <!-- Power Button -->
+                                    <button class="btn btn-success w-100 py-3 fw-bold mb-2 d-flex align-items-center justify-content-center gap-2" id="btn-toggle-sim" onclick="toggleSimulation()" style="border-radius: 30px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);">
+                                        <i class="fas fa-play"></i> <span>Mulai Simulasi</span>
+                                    </button>
+                                    
+                                    <!-- Test Sound Button -->
+                                    <button class="btn btn-outline-warning w-100 py-2 fw-semibold mb-3 d-flex align-items-center justify-content-center gap-2" id="btn-test-sound" onclick="testSpeakerSound()" style="border-radius: 30px; transition: all 0.3s;">
+                                        <i class="fas fa-volume-up"></i> <span>Tes Suara Bel</span>
+                                    </button>
+                                    
+                                    <!-- Virtual Time -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold d-flex justify-content-between">
+                                            <span>Waktu Virtual (RTC):</span>
+                                            <span id="sim-rtc-time" class="text-success font-monospace fw-bold">12:00:00</span>
+                                        </label>
+                                        <div class="d-flex gap-2">
+                                            <input type="time" class="form-control form-control-sm bg-dark border-secondary text-white" id="sim-time-setter" value="06:59" onchange="setSimTime(this.value)" style="border-color: #3f3f46 !important;">
+                                            <button class="btn btn-outline-info btn-sm" onclick="syncSimWithSystem()" title="Sinkronkan dengan Waktu Sistem"><i class="fas fa-sync"></i></button>
+                                        </div>
+                                        <div class="small text-muted mt-1">Hari: <span id="sim-day-display" class="fw-semibold text-white">Senin</span></div>
+                                    </div>
+                                    
+                                    <!-- Time Speed -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold d-flex justify-content-between">
+                                            <span>Kecepatan Waktu:</span>
+                                            <span id="sim-speed-val" class="text-info fw-bold">1x</span>
+                                        </label>
+                                        <input type="range" class="form-range" id="sim-speed-slider" min="1" max="120" value="1" oninput="updateSimSpeed(this.value)">
+                                        <div class="d-flex justify-content-between small text-muted font-monospace" style="font-size: 0.7rem;">
+                                            <span>Realtime</span>
+                                            <span>30x</span>
+                                            <span>60x</span>
+                                            <span>120x</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- NodeMCU Pins State Indicators -->
+                                    <div class="mb-2">
+                                        <span class="small fw-bold">Status Pin NodeMCU:</span>
+                                        <div class="d-flex flex-wrap gap-2 mt-2" id="pins-indicator-container" style="font-size: 0.75rem;">
+                                            <span id="pin-led-d1" class="badge bg-secondary font-monospace">D1 (SCL): LOW</span>
+                                            <span id="pin-led-d2" class="badge bg-secondary font-monospace">D2 (SDA): LOW</span>
+                                            <span id="pin-led-d5" class="badge bg-secondary font-monospace">D5 (RX): LOW</span>
+                                            <span id="pin-led-d6" class="badge bg-secondary font-monospace">D6 (TX): LOW</span>
+                                            <span id="pin-led-d7" class="badge bg-secondary font-monospace">D7 (Relay): LOW</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Serial Monitor -->
+                                <div class="d-flex flex-column flex-grow-1 border border-secondary rounded-3 overflow-hidden bg-black text-success font-monospace" style="height: 300px; border-color: #3f3f46 !important;">
+                                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-secondary" style="background-color: #18181b; border-color: #3f3f46 !important;">
+                                        <span class="small fw-bold" style="color: #cbd5e1;"><i class="fas fa-terminal me-2"></i>Serial Monitor (115200)</span>
+                                        <button class="btn btn-outline-secondary btn-sm py-0 px-2 text-white" onclick="clearSerial()" style="font-size: 0.75rem; border-color: #3f3f46;">Clear</button>
+                                    </div>
+                                    <div class="p-3 flex-grow-1 overflow-auto small" id="serial-output" style="height: 240px; line-height: 1.4; background-color: #09090b; color: #22c55e;">
+                                        [Simulator] Klik "Mulai Simulasi" untuk menyalakan perangkat...
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right side: Interactive Circuit Visualizer -->
+                            <div class="col-lg-8">
+                                <div class="p-3 rounded-3 bg-black bg-opacity-30 border border-secondary position-relative overflow-auto d-flex align-items-center justify-content-center" style="min-height: 550px; background-color: #27272a; border-color: #3f3f46 !important;">
+                                    <!-- SVG Overlay for Wiring -->
+                                    <svg class="position-absolute top-0 start-0 w-100 h-100" id="wiring-svg" style="pointer-events: none; z-index: 1; min-width: 650px; min-height: 520px;">
+                                        <!-- Wires will be drawn here dynamically -->
+                                    </svg>
+                                    
+                                    <!-- Circuit Board layout -->
+                                    <div class="circuit-grid position-relative" style="z-index: 2; width: 650px; height: 520px;">
+                                        <!-- NodeMCU Module -->
+                                        <div id="module-nodemcu" class="hw-module text-center shadow-lg border border-secondary" style="top: 130px; left: 10px; width: 170px; height: 280px; background: #1e1b4b; border-radius: 8px; border-color: #4338ca !important;">
+                                            <div class="hw-header py-1 bg-black bg-opacity-50 text-white fw-bold small rounded-top border-bottom border-secondary" style="border-color: #4338ca !important; font-size: 0.7rem;">NodeMCU ESP8266</div>
+                                            <div class="p-2 position-relative h-100 text-white-50 small">
+                                                <!-- Chip ESP12F Visual -->
+                                                <div class="mx-auto my-2 border border-secondary" style="width: 70px; height: 90px; background: #64748b; border-radius: 4px; position: relative; border-color: #94a3b8 !important;">
+                                                    <div class="bg-dark text-white font-monospace text-center py-1" style="font-size: 0.55rem; border-radius: 2px; margin: 5px;">ESP8266</div>
+                                                    <div class="w-100 bg-secondary" style="height: 15px; position: absolute; bottom: 0;"></div>
+                                                    <!-- Antenna visual -->
+                                                    <div style="border-top: 3px double #d1d5db; width: 80%; margin: 5px auto 0;"></div>
+                                                </div>
+                                                
+                                                <!-- Builtin LED -->
+                                                <div id="nodemcu-builtin-led" class="led led-blue position-absolute" style="top: 110px; left: 25px; width: 8px; height: 8px; border-radius: 50%;"></div>
+                                                <div class="small position-absolute" style="top: 106px; left: 37px; font-size: 0.55rem;">D4</div>
+
+                                                <!-- Power LED -->
+                                                <div id="nodemcu-pwr-led" class="led led-red position-absolute" style="top: 110px; right: 25px; width: 8px; height: 8px; border-radius: 50%;"></div>
+                                                <div class="small position-absolute" style="top: 106px; right: 37px; font-size: 0.55rem;">PWR</div>
+                                                
+                                                <!-- Pins display -->
+                                                <div class="d-flex justify-content-between position-absolute w-100 px-2" style="bottom: 40px; left: 0;">
+                                                    <div class="text-start font-monospace text-white" style="font-size: 0.6rem; line-height: 1.45;">
+                                                        <div class="position-relative"><span class="pin-dot bg-danger" id="pin-nodemcu-3v3"></span>3V3</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-dark" id="pin-nodemcu-gnd-l"></span>GND</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-info" id="pin-nodemcu-d1"></span>D1</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-info" id="pin-nodemcu-d2"></span>D2</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-warning" id="pin-nodemcu-d5"></span>D5</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-warning" id="pin-nodemcu-d6"></span>D6</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-success" id="pin-nodemcu-d7"></span>D7</div>
+                                                    </div>
+                                                    <div class="text-end font-monospace text-white" style="font-size: 0.6rem; line-height: 1.45;">
+                                                        <div class="position-relative">VIN<span class="pin-dot bg-danger" id="pin-nodemcu-vin"></span></div>
+                                                        <div class="position-relative">GND<span class="pin-dot bg-dark" id="pin-nodemcu-gnd-r"></span></div>
+                                                        <div class="position-relative">TX<span class="pin-dot bg-secondary" id="pin-nodemcu-tx"></span></div>
+                                                        <div class="position-relative">RX<span class="pin-dot bg-secondary" id="pin-nodemcu-rx"></span></div>
+                                                        <div class="position-relative">D3<span class="pin-dot bg-secondary" id="pin-nodemcu-d3"></span></div>
+                                                        <div class="position-relative">D4<span class="pin-dot bg-secondary" id="pin-nodemcu-d4"></span></div>
+                                                        <div class="position-relative">D8<span class="pin-dot bg-secondary" id="pin-nodemcu-d8"></span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- RTC DS3231 Module -->
+                                        <div id="module-rtc" class="hw-module text-center shadow-lg border border-secondary" style="top: 15px; left: 240px; width: 140px; height: 160px; background: #064e3b; border-radius: 8px; border-color: #047857 !important;">
+                                            <div class="hw-header py-1 bg-black bg-opacity-50 text-white fw-bold small rounded-top border-bottom border-secondary" style="border-color: #047857 !important; font-size: 0.7rem;">DS3231 RTC</div>
+                                            <div class="p-2 text-white-50 small font-monospace">
+                                                <!-- LCD Display on RTC -->
+                                                <div class="bg-black text-success rounded p-1 my-2 border border-secondary text-center" style="font-size: 0.75rem; letter-spacing: 1px; border-color: #047857 !important;">
+                                                    <div id="rtc-lcd-time" class="fw-bold text-success">12:00:00</div>
+                                                    <div id="rtc-lcd-date" style="font-size: 0.55rem; color: #86efac;">2026-06-13</div>
+                                                </div>
+                                                
+                                                <!-- CR2032 Battery visual -->
+                                                <div class="mx-auto rounded-circle border border-secondary bg-secondary" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 0.55rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); border-color: #475569 !important;">
+                                                    CR2032
+                                                </div>
+                                                
+                                                <!-- Pins -->
+                                                <div class="d-flex justify-content-center mt-2 font-monospace gap-3 text-white" style="font-size: 0.55rem;">
+                                                    <div class="position-relative d-flex flex-column align-items-center">
+                                                        <span class="pin-dot-bottom bg-info" id="pin-rtc-scl"></span>SCL
+                                                    </div>
+                                                    <div class="position-relative d-flex flex-column align-items-center">
+                                                        <span class="pin-dot-bottom bg-info" id="pin-rtc-sda"></span>SDA
+                                                    </div>
+                                                    <div class="position-relative d-flex flex-column align-items-center">
+                                                        <span class="pin-dot-bottom bg-danger" id="pin-rtc-vcc"></span>VCC
+                                                    </div>
+                                                    <div class="position-relative d-flex flex-column align-items-center">
+                                                        <span class="pin-dot-bottom bg-dark" id="pin-rtc-gnd"></span>GND
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- DFPlayer Mini Module -->
+                                        <div id="module-dfplayer" class="hw-module text-center shadow-lg border border-secondary" style="top: 205px; left: 240px; width: 160px; height: 160px; background: #7c2d12; border-radius: 8px; border-color: #9a3412 !important;">
+                                            <div class="hw-header py-1 bg-black bg-opacity-50 text-white fw-bold small rounded-top border-bottom border-secondary" style="border-color: #9a3412 !important; font-size: 0.7rem;">DFPlayer Mini</div>
+                                            <div class="p-2 position-relative h-100 text-white-50 small">
+                                                <!-- Micro SD Card Slot Visual -->
+                                                <div class="mx-auto border border-dark bg-dark rounded-bottom" style="width: 50px; height: 35px; position: relative;">
+                                                    <div class="bg-secondary position-absolute" style="top: 0; left: 5px; right: 5px; height: 20px; border-radius: 2px;"></div>
+                                                    <div class="bg-warning text-dark font-monospace fw-bold" style="font-size: 0.45rem; position: absolute; bottom: 2px; left: 0; right: 0; text-align: center;">SD CARD</div>
+                                                </div>
+                                                
+                                                <!-- Active Indicator LED -->
+                                                <div id="dfplayer-led" class="led led-blue position-absolute" style="top: 60px; right: 20px; width: 8px; height: 8px; border-radius: 50%;"></div>
+                                                <div class="position-absolute small" style="top: 56px; right: 32px; font-size: 0.55rem;">BUSY</div>
+                                                
+                                                <!-- Chip -->
+                                                <div class="mx-auto bg-dark border border-secondary rounded mt-2" style="width: 80px; height: 30px; font-size: 0.55rem; display: flex; align-items: center; justify-content: center; font-family: monospace; border-color: #475569 !important;">
+                                                    DFPlayer
+                                                </div>
+                                                
+                                                <!-- Pins label -->
+                                                <div class="d-flex justify-content-between position-absolute w-100 px-2" style="bottom: 35px; left: 0; font-size: 0.55rem; font-family: monospace;">
+                                                    <div class="d-flex gap-2 text-white">
+                                                        <div class="position-relative"><span class="pin-dot bg-danger" id="pin-dfplayer-vcc"></span>VCC</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-warning" id="pin-dfplayer-rx"></span>RX</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-warning" id="pin-dfplayer-tx"></span>TX</div>
+                                                    </div>
+                                                    <div class="d-flex gap-2 text-end text-white">
+                                                        <div class="position-relative">SP1<span class="pin-dot bg-success" id="pin-dfplayer-spk1"></span></div>
+                                                        <div class="position-relative">SP2<span class="pin-dot bg-success" id="pin-dfplayer-spk2"></span></div>
+                                                        <div class="position-relative">GND<span class="pin-dot bg-dark" id="pin-dfplayer-gnd"></span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Relay Module -->
+                                        <div id="module-relay" class="hw-module text-center shadow-lg border border-secondary" style="top: 100px; left: 470px; width: 160px; height: 160px; background: #1e3a8a; border-radius: 8px; border-color: #2563eb !important;">
+                                            <div class="hw-header py-1 bg-black bg-opacity-50 text-white fw-bold small rounded-top border-bottom border-secondary" style="border-color: #2563eb !important; font-size: 0.7rem;">Relay Modul</div>
+                                            <div class="p-2 position-relative h-100 text-white-50 small">
+                                                <!-- Blue Relay Box Visual -->
+                                                <div id="relay-box" class="mx-auto bg-primary border border-info rounded shadow" style="width: 70px; height: 70px; position: relative; transition: all 0.3s; border-color: #38bdf8 !important; background-color: #2563eb !important;">
+                                                    <div class="text-white font-monospace text-center pt-2 fw-bold" style="font-size: 0.7rem;">SRD-12V</div>
+                                                    <div class="text-white-50 font-monospace text-center" style="font-size: 0.45rem;">10A 250V</div>
+                                                    <!-- Relay state switch indicator -->
+                                                    <div id="relay-switch-visual" style="border-left: 2px solid white; height: 12px; width: 2px; position: absolute; bottom: 8px; left: 34px; transform-origin: top center; transform: rotate(-25deg); transition: transform 0.2s;"></div>
+                                                </div>
+                                                
+                                                <!-- Relay LED -->
+                                                <div id="relay-led" class="led led-red position-absolute" style="top: 115px; left: 20px; width: 8px; height: 8px; border-radius: 50%;"></div>
+                                                <div class="position-absolute text-white" style="top: 110px; left: 32px; font-size: 0.55rem;">STATE</div>
+                                                
+                                                <!-- Pins -->
+                                                <div class="d-flex justify-content-between position-absolute w-100 px-2" style="bottom: 35px; left: 0; font-size: 0.55rem; font-family: monospace;">
+                                                    <div class="d-flex gap-1 text-white">
+                                                        <div class="position-relative"><span class="pin-dot bg-success" id="pin-relay-in"></span>IN</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-dark" id="pin-relay-gnd"></span>GND</div>
+                                                        <div class="position-relative"><span class="pin-dot bg-danger" id="pin-relay-vcc"></span>VCC</div>
+                                                    </div>
+                                                    <div class="d-flex gap-1 text-end text-white">
+                                                        <div class="position-relative">NO<span class="pin-dot bg-info" id="pin-relay-no"></span></div>
+                                                        <div class="position-relative">COM<span class="pin-dot bg-info" id="pin-relay-com"></span></div>
+                                                        <div class="position-relative">NC<span class="pin-dot bg-secondary"></span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Speaker Module -->
+                                        <div id="module-speaker" class="hw-module text-center shadow-lg border border-secondary" style="top: 300px; left: 470px; width: 160px; height: 160px; background: #4b5563; border-radius: 8px; border-color: #6b7280 !important;">
+                                            <div class="hw-header py-1 bg-black bg-opacity-50 text-white fw-bold small rounded-top border-bottom border-secondary" style="border-color: #6b7280 !important; font-size: 0.7rem;">Speaker Bel Sekolah</div>
+                                            <div class="p-2 position-relative h-100 text-white-50 d-flex flex-column align-items-center justify-content-center">
+                                                <!-- Visual speaker cone -->
+                                                <div id="speaker-cone" class="position-relative mt-2" style="width: 75px; height: 75px; border-radius: 50%; background: #1f2937; border: 4px solid #374151; display: flex; align-items: center; justify-content: center; transition: transform 0.1s;">
+                                                    <div class="bg-secondary rounded-circle" style="width: 25px; height: 25px; border: 2px solid #4b5563;"></div>
+                                                    <!-- Wave ripples -->
+                                                    <div class="sound-wave" id="wave-1"></div>
+                                                    <div class="sound-wave" id="wave-2"></div>
+                                                </div>
+                                                
+                                                <!-- Pins -->
+                                                <div class="d-flex justify-content-center gap-4 mt-2 font-monospace text-white" style="font-size: 0.65rem;">
+                                                    <div class="position-relative"><span class="pin-dot-bottom bg-info" id="pin-speaker-in-p"></span>+</div>
+                                                    <div class="position-relative"><span class="pin-dot-bottom bg-info" id="pin-speaker-in-n"></span>-</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab 2: Code Editor Pane -->
+                    <div class="tab-pane fade p-4" id="code-pane" role="tabpanel" aria-labelledby="code-tab" tabindex="0">
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="fw-bold mb-1 text-warning"><i class="fas fa-file-code me-2"></i>Arduino IDE Editor Virtual</h5>
+                                    <p class="text-muted small mb-0">Edit kode NodeMCU di bawah. Perubahan pin akan diverifikasi oleh compiler simulasi.</p>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-secondary btn-sm text-white" onclick="resetDefaultCode()"><i class="fas fa-undo me-1"></i>Reset Kode</button>
+                                    <button class="btn btn-warning btn-sm text-dark fw-bold px-3" onclick="compileAndLoadCode()"><i class="fas fa-upload me-1"></i>Compile & Upload</button>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-lg-12">
+                                    <!-- Editor Area -->
+                                    <div class="position-relative border border-secondary rounded-3 overflow-hidden bg-dark" style="border-color: #3f3f46 !important;">
+                                        <div class="d-flex justify-content-between align-items-center bg-black bg-opacity-40 px-3 py-2 border-bottom border-secondary text-white-50 font-monospace small" style="border-color: #3f3f46 !important;">
+                                            <span>bel_sekolah_nodemcu.ino</span>
+                                            <span class="badge bg-secondary font-monospace" id="compiler-status">READY</span>
+                                        </div>
+                                        <textarea id="code-editor-textarea" class="form-control font-monospace p-3 text-light bg-black border-0" rows="18" style="font-size: 0.85rem; line-height: 1.5; resize: vertical; white-space: pre; overflow-x: auto; background-color: #09090b !important; font-family: 'JetBrains Mono', monospace;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Simulator Logic -->
+    <script>
+        let useMock = true; // Simulator works primarily with local storage mock database
+        let schedules = [];
+        const DAYS_INDONESIAN = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+        // Initialize Local Mock DB to synchronize schedules and stats with index.html
+        function initMockData() {
+            if (!localStorage.getItem('bel_schedules')) {
+                const defaultSchedules = [
+                    { id: 1, name: "Bel Masuk Pagi", time: "07:00", days: [1,2,3,4,5,6], folder: 1, file: 1, active: 1 },
+                    { id: 2, name: "Bel Masuk Jam Pelajaran", time: "07:30", days: [1,2,3,4,5,6], folder: 1, file: 2, active: 1 },
+                    { id: 3, name: "Bel Istirahat Pertama", time: "10:00", days: [1,2,3,4,5], folder: 1, file: 3, active: 1 },
+                    { id: 4, name: "Bel Pulang Sekolah", time: "14:00", days: [1,2,3,4,5], folder: 1, file: 4, active: 1 }
+                ];
+                localStorage.setItem('bel_schedules', JSON.stringify(defaultSchedules));
+            }
+            schedules = JSON.parse(localStorage.getItem('bel_schedules')) || [];
+            
+            if (!localStorage.getItem('bel_stats')) {
+                const defaultStats = {
+                    bells_today: 12,
+                    success_rate: "12/12",
+                    system_status: "Aktif",
+                    wifi_ssid: "SMPN_Purworejo_WIFI",
+                    wifi_signal: "Kuat",
+                    uptime: "3 hari, 4 jam",
+                    last_active: "Belum berbunyi"
+                };
+                localStorage.setItem('bel_stats', JSON.stringify(defaultStats));
+            }
+        }
+
+        // Mock API Fetch wrapper
+        async function apiFetch(url, options = {}) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    initMockData(); // Reload latest schedules
+                    if (url.includes('api/schedules')) {
+                        resolve(schedules);
+                    } else if (url.includes('api/status')) {
+                        const stats = JSON.parse(localStorage.getItem('bel_stats')) || {};
+                        resolve(stats);
+                    }
+                }, 50);
+            });
+        }
+
+        // ==========================================
+        // HARDWARE SIMULATOR LOGIC & STATE
+        // ==========================================
+        let simRunning = false;
+        let simTime = new Date();
+        let simSpeed = 1;
+        let simIntervalId = null;
+        let simLastCheckedMinute = -1;
+        let simLastCheckedDay = -1;
+        
+        let simRelayPin = 'D7';
+        let simRxPin = 'D5';
+        let simTxPin = 'D6';
+        let simWifiSSID = 'Bel_Sekolah_AP';
+        let simVolume = 25;
+        let simAlarmDuration = 45000;
+        
+        let simRelayState = false;
+        let simAmplifierTimer = null;
+        let simAudioCtx = null;
+        
+        const DEFAULT_INO_CODE = `/*
+ * Sistem Bel Sekolah Otomatis - SMPN Purworejo
+ * Khusus Board: NodeMCU ESP8266
+ * 
+ * Hubungan Pin NodeMCU:
+ * 1. RTC DS3231: SDA -> Pin D2, SCL -> Pin D1, VCC -> 3V3, GND -> GND
+ * 2. DFPlayer Mini: TX -> Pin D5, RX -> Pin D6 (via Resistor 1K Ohm), VCC -> VIN (5V), GND -> GND
+ * 3. Modul Relay: IN -> Pin D7, VCC -> VIN / 3V3, GND -> GND
+ */
+
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#include <SoftwareSerial.h>
+#include <LittleFS.h>
+#include <ArduinoJson.h>
+#include <Wire.h>
+#include <RTClib.h>
+#include <DFRobotDFPlayerMini.h>
+
+// Definisi Pin NodeMCU ESP8266
+#define PIN_RX D5         // RX NodeMCU ke TX DFPlayer
+#define PIN_TX D6         // TX NodeMCU ke RX DFPlayer (Gunakan Resistor 1K Ohm)
+#define PIN_RELAY D7      // Pin output untuk mengaktifkan Relay Amplifier
+
+// Inisialisasi Objek
+ESP8266WebServer server(80);
+SoftwareSerial mySerial(PIN_RX, PIN_TX); 
+DFRobotDFPlayerMini myDFPlayer;
+RTC_DS3231 rtc;
+
+// Struktur Konfigurasi WiFi
+struct Config {
+  char wifi_ssid[32] = "Bel_Sekolah_AP";
+  char wifi_password[64] = "12345678";
+  bool is_ap = true;
+};
+Config systemConfig;
+
+// Variabel State Sistem
+unsigned long uptimeStart;
+int bellsTodayCount = 0;
+int successBellsCount = 0;
+String lastActiveBell = "Belum berbunyi hari ini";
+int lastPlayedMinute = -1;
+int lastPlayedDay = -1;
+bool isAmplifierOn = false;
+unsigned long ampOffTime = 0;
+
+void setup() {
+  Serial.begin(115200);
+  uptimeStart = millis();
+  
+  pinMode(PIN_RELAY, OUTPUT);
+  digitalWrite(PIN_RELAY, LOW); 
+  
+  initFS();
+  setupWiFi();
+  
+  if (!rtc.begin()) {
+    Serial.println("Modul RTC DS3231 tidak terdeteksi!");
+  }
+  
+  mySerial.begin(9600);
+  if (!myDFPlayer.begin(mySerial)) {
+    Serial.println("Koneksi ke DFPlayer gagal!");
+  } else {
+    myDFPlayer.volume(25);
+  }
+  
+  setupWebServer();
+}
+
+void loop() {
+  server.handleClient();
+  if (rtc.begin()) {
+    DateTime now = rtc.now();
+    checkAlarm(now);
+  }
+  
+  if (isAmplifierOn && millis() > ampOffTime) {
+    digitalWrite(PIN_RELAY, LOW);
+    isAmplifierOn = false;
+  }
+  delay(100);
+}`;
+
+        // Get pin node coordinates relative to circuit board grid
+        function getPinCoords(pinId) {
+            const pin = document.getElementById(pinId);
+            const grid = document.querySelector('.circuit-grid');
+            if (!pin || !grid) return { x: 0, y: 0 };
+            const pinRect = pin.getBoundingClientRect();
+            const gridRect = grid.getBoundingClientRect();
+            return {
+                x: pinRect.left - gridRect.left + pinRect.width / 2,
+                y: pinRect.top - gridRect.top + pinRect.height / 2
+            };
+        }
+
+        // Draw wires between nodes
+        function drawWires() {
+            const svg = document.getElementById('wiring-svg');
+            if (!svg) return;
+            svg.innerHTML = ''; // Clear existing wires
+
+            const resolvePinId = (pinName) => {
+                const name = String(pinName).trim().toUpperCase();
+                if (name.startsWith('D')) {
+                    return `pin-nodemcu-${name.toLowerCase()}`;
+                }
+                if (name === 'TX' || name === 'RX' || name === 'VIN' || name === '3V3') {
+                    return `pin-nodemcu-${name.toLowerCase()}`;
+                }
+                return `pin-nodemcu-${name.toLowerCase()}`;
+            };
+
+            const connections = [
+                // I2C (RTC)
+                { from: 'pin-nodemcu-d1', to: 'pin-rtc-scl', color: '#06b6d4' },
+                { from: 'pin-nodemcu-d2', to: 'pin-rtc-sda', color: '#3b82f6' },
+                { from: 'pin-nodemcu-3v3', to: 'pin-rtc-vcc', color: '#ef4444' },
+                { from: 'pin-nodemcu-gnd-l', to: 'pin-rtc-gnd', color: '#09090b' },
+                
+                // DFPlayer Serial (Dynamic)
+                { from: resolvePinId(simRxPin), to: 'pin-dfplayer-tx', color: '#eab308' },
+                { from: resolvePinId(simTxPin), to: 'pin-dfplayer-rx', color: '#f97316' },
+                { from: 'pin-nodemcu-vin', to: 'pin-dfplayer-vcc', color: '#ef4444' },
+                { from: 'pin-nodemcu-gnd-r', to: 'pin-dfplayer-gnd', color: '#09090b' },
+
+                // Relay Control (Dynamic)
+                { from: resolvePinId(simRelayPin), to: 'pin-relay-in', color: '#a855f7' },
+                { from: 'pin-nodemcu-vin', to: 'pin-relay-vcc', color: '#ef4444' },
+                { from: 'pin-nodemcu-gnd-r', to: 'pin-relay-gnd', color: '#09090b' },
+
+                // Relay Output & Speaker
+                { from: 'pin-dfplayer-spk1', to: 'pin-speaker-in-p', color: '#ec4899' },
+                { from: 'pin-dfplayer-spk2', to: 'pin-relay-com', color: '#64748b' },
+                { from: 'pin-relay-no', to: 'pin-speaker-in-n', color: '#10b981' }
+            ];
+
+            connections.forEach(conn => {
+                const start = getPinCoords(conn.from);
+                const end = getPinCoords(conn.to);
+                if (start.x === 0 || end.x === 0) return;
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const dx = Math.abs(end.x - start.x);
+                const dy = Math.abs(end.y - start.y);
+                let cp1x = start.x;
+                let cp1y = start.y;
+                let cp2x = end.x;
+                let cp2y = end.y;
+
+                if (dx > dy) {
+                    cp1x = start.x + (end.x - start.x) * 0.4;
+                    cp2x = start.x + (end.x - start.x) * 0.6;
+                } else {
+                    cp1y = start.y + (end.y - start.y) * 0.4;
+                    cp2y = start.y + (end.y - start.y) * 0.6;
+                }
+
+                const d = `M ${start.x} ${start.y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${end.x} ${end.y}`;
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'wire');
+                path.setAttribute('stroke', conn.color);
+                path.setAttribute('stroke-width', '2.5');
+                path.setAttribute('id', `wire-${conn.from}-${conn.to}`);
+
+                if (simRunning) {
+                    path.classList.add('active');
+                }
+                svg.appendChild(path);
+            });
+        }
+
+        // Initialize Simulator Code Editor & parameters
+        async function initSimulator() {
+            initMockData();
+            
+            const editor = document.getElementById('code-editor-textarea');
+            if (editor) {
+                try {
+                    const res = await fetch('bel_sekolah_nodemcu/bel_sekolah_nodemcu.ino');
+                    if (res.ok) {
+                        editor.value = await res.text();
+                    } else {
+                        editor.value = DEFAULT_INO_CODE;
+                    }
+                } catch (e) {
+                    editor.value = DEFAULT_INO_CODE;
+                }
+            }
+            
+            // Sync with browser time initially
+            syncSimWithSystem();
+            
+            // Set window and tab handlers
+            window.addEventListener('resize', drawWires);
+            
+            // Tab shown event redraw wires
+            const tabBtn = document.getElementById('circuit-tab');
+            if (tabBtn) {
+                tabBtn.addEventListener('shown.bs.tab', () => {
+                    setTimeout(drawWires, 100);
+                });
+            }
+            
+            updatePinBadges();
+        }
+
+        // Update RTC time display boxes
+        function updateRtcDisplay() {
+            const timeDisplay = document.getElementById('sim-rtc-time');
+            const lcdTime = document.getElementById('rtc-lcd-time');
+            const lcdDate = document.getElementById('rtc-lcd-date');
+            const dayDisplay = document.getElementById('sim-day-display');
+            
+            if (!timeDisplay) return;
+            
+            const hours = String(simTime.getHours()).padStart(2, '0');
+            const minutes = String(simTime.getMinutes()).padStart(2, '0');
+            const seconds = String(simTime.getSeconds()).padStart(2, '0');
+            
+            const timeStr = `${hours}:${minutes}:${seconds}`;
+            timeDisplay.textContent = timeStr;
+            if (lcdTime) lcdTime.textContent = timeStr;
+            
+            const year = simTime.getFullYear();
+            const month = String(simTime.getMonth() + 1).padStart(2, '0');
+            const date = String(simTime.getDate()).padStart(2, '0');
+            if (lcdDate) lcdDate.textContent = `${year}-${month}-${date}`;
+            
+            if (dayDisplay) {
+                dayDisplay.textContent = DAYS_INDONESIAN[simTime.getDay()];
+            }
+        }
+
+        // Manual Time Setter
+        function setSimTime(timeVal) {
+            if (!timeVal) return;
+            const [h, m] = timeVal.split(':').map(Number);
+            simTime.setHours(h, m, 0);
+            updateRtcDisplay();
+            logSerial(`[RTC] Waktu diatur manual ke: ${timeVal}:00`, 'info');
+        }
+
+        // Sync with browser time
+        function syncSimWithSystem() {
+            simTime = new Date();
+            updateRtcDisplay();
+            logSerial(`[RTC] Waktu disinkronkan dengan Browser: ${simTime.toLocaleTimeString()}`, 'info');
+        }
+
+        // Speed control
+        function updateSimSpeed(val) {
+            simSpeed = parseInt(val);
+            document.getElementById('sim-speed-val').textContent = `${simSpeed}x`;
+            logSerial(`[Simulator] Kecepatan waktu virtual diset ke ${simSpeed}x`, 'info');
+            
+            if (simRunning) {
+                stopEventLoop();
+                startEventLoop();
+            }
+        }
+
+        // Log messages to Serial Monitor
+        function logSerial(msg, type = 'info') {
+            const consoleBox = document.getElementById('serial-output');
+            if (!consoleBox) return;
+            
+            const timeStr = simTime.toTimeString().split(' ')[0];
+            const div = document.createElement('div');
+            div.className = `serial-output-line serial-${type}`;
+            div.textContent = `[${timeStr}] ${msg}`;
+            
+            consoleBox.appendChild(div);
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        function clearSerial() {
+            const consoleBox = document.getElementById('serial-output');
+            if (consoleBox) consoleBox.innerHTML = '';
+        }
+
+        // Toggle Simulation state
+        function toggleSimulation() {
+            const btn = document.getElementById('btn-toggle-sim');
+            const pwrLed = document.getElementById('nodemcu-pwr-led');
+            
+            if (simRunning) {
+                simRunning = false;
+                stopEventLoop();
+                btn.className = 'btn btn-success w-100 py-3 fw-bold mb-2 d-flex align-items-center justify-content-center gap-2';
+                btn.innerHTML = '<i class="fas fa-play"></i> <span>Mulai Simulasi</span>';
+                if (pwrLed) pwrLed.classList.remove('active');
+                
+                updatePinIndicator('D1', false);
+                updatePinIndicator('D2', false);
+                updatePinIndicator('D5', false);
+                updatePinIndicator('D6', false);
+                updatePinIndicator('D7', false);
+                
+                setRelayState(false);
+                setSpeakerState(false);
+                
+                logSerial('[SYSTEM] Simulasi dimatikan. Power OFF.', 'error');
+                drawWires();
+            } else {
+                simRunning = true;
+                btn.className = 'btn btn-danger w-100 py-3 fw-bold mb-2 d-flex align-items-center justify-content-center gap-2';
+                btn.innerHTML = '<i class="fas fa-stop"></i> <span>Hentikan Simulasi</span>';
+                if (pwrLed) pwrLed.classList.add('active');
+                
+                // Initialize/Resume AudioContext on user gesture
+                try {
+                    if (!simAudioCtx) {
+                        simAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (simAudioCtx.state === 'suspended') {
+                        simAudioCtx.resume();
+                    }
+                } catch (e) {
+                    console.warn("AudioContext init failed:", e);
+                }
+                
+                logSerial('[SYSTEM] Booting NodeMCU ESP8266...', 'info');
+                setTimeout(() => {
+                    logSerial('[SYSTEM] LittleFS mounted successfully (Size: 2MB)', 'success');
+                    logSerial(`[WIFI] Connecting to SSID: ${simWifiSSID}...`, 'info');
+                    
+                    setTimeout(() => {
+                        logSerial('[WIFI] Connected! Assigned IP: 192.168.4.1 (Access Point Mode)', 'success');
+                        logSerial('[RTC] DS3231 RTC Module detected via I2C at address 0x68', 'success');
+                        logSerial('[AUDIO] DFPlayer Mini found on SoftwareSerial pins RX:D5, TX:D6', 'success');
+                        logSerial('[SYSTEM] Setup complete. Entering loop(). Waiting for alarms...', 'info');
+                        
+                        startEventLoop();
+                        drawWires();
+                    }, 800);
+                }, 400);
+            }
+        }
+
+        // Manual speaker test function
+        function testSpeakerSound() {
+            if (!simRunning) {
+                alert("Silakan nyalakan simulasi terlebih dahulu dengan menekan tombol 'Mulai Simulasi'!");
+                return;
+            }
+            
+            // Resume/Init Audio Context
+            try {
+                if (!simAudioCtx) {
+                    simAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (simAudioCtx.state === 'suspended') {
+                    simAudioCtx.resume();
+                }
+            } catch (e) {
+                console.warn("AudioContext init failed:", e);
+            }
+            
+            logSerial(`[TEST] Tes suara speaker manual dipicu.`, 'info');
+            logSerial(`[DFPLAYER] Mengirim perintah via UART: Play Folder 1, File 1 (Volume: ${simVolume})`, 'info');
+            
+            blinkSerialPins();
+            
+            updatePinIndicator(simRelayPin, true);
+            setRelayState(true);
+            setSpeakerState(true);
+            
+            playTone();
+            
+            // Stop sound after 5 seconds
+            setTimeout(() => {
+                setRelayState(false);
+                setSpeakerState(false);
+                logSerial('[TEST] Tes suara selesai. Speaker & Relay dimatikan.', 'info');
+            }, 5000);
+        }
+
+        function startEventLoop() {
+            simIntervalId = setInterval(tickSimulation, 100);
+        }
+
+        // Ticks Virtual Loop
+        function tickSimulation() {
+            if (!simRunning) return;
+            
+            const timeDiffMs = 100 * simSpeed;
+            simTime = new Date(simTime.getTime() + timeDiffMs);
+            updateRtcDisplay();
+            
+            const hour = simTime.getHours();
+            const minute = simTime.getMinutes();
+            const second = simTime.getSeconds();
+            
+            // Flash communication LEDs on D1/D2
+            if (second % 2 === 0) {
+                updatePinIndicator('D1', true);
+                updatePinIndicator('D2', true);
+            } else {
+                updatePinIndicator('D1', false);
+                updatePinIndicator('D2', false);
+            }
+            
+            if (minute !== simLastCheckedMinute) {
+                simLastCheckedMinute = minute;
+                checkVirtualAlarms(hour, minute);
+            }
+            
+            if (simRelayState && simAmplifierTimer && simTime >= simAmplifierTimer) {
+                setRelayState(false);
+                setSpeakerState(false);
+                logSerial('[SYSTEM] Alarm selesai. Amplifier dimatikan otomatis.', 'info');
+            }
+        }
+
+        function stopEventLoop() {
+            if (simIntervalId) {
+                clearInterval(simIntervalId);
+                simIntervalId = null;
+            }
+        }
+
+        // Matches alarm time
+        async function checkVirtualAlarms(hour, minute) {
+            try {
+                const schedules = await apiFetch('api/schedules');
+                const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+                
+                let dayToday = simTime.getDay();
+                if (dayToday === 0) dayToday = 7;
+                
+                schedules.forEach(s => {
+                    if (s.active && s.time === timeStr && s.days.includes(dayToday)) {
+                        triggerVirtualAlarm(s);
+                    }
+                });
+            } catch (e) {
+                console.error("Simulation alarm check error:", e);
+            }
+        }
+
+        // Alarm trigger behavior
+        function triggerVirtualAlarm(schedule) {
+            logSerial(`[ALARM] Cocok ditemukan! Memicu: "${schedule.name}"`, 'success');
+            logSerial(`[DFPLAYER] Mengirim perintah via UART: Play Folder ${schedule.folder}, File ${schedule.file}`, 'info');
+            
+            blinkSerialPins();
+            
+            updatePinIndicator(simRelayPin, true);
+            setRelayState(true);
+            setSpeakerState(true);
+            
+            playTone(); 
+            
+            simAmplifierTimer = new Date(simTime.getTime() + simAlarmDuration);
+            
+            try {
+                const stats = JSON.parse(localStorage.getItem('bel_stats')) || {};
+                stats.bells_today = (stats.bells_today || 0) + 1;
+                
+                const parts = (stats.success_rate || "0/0").split('/');
+                const successNum = (parseInt(parts[0]) || 0) + 1;
+                const totalNum = (parseInt(parts[1]) || 0) + 1;
+                stats.success_rate = `${successNum}/${totalNum}`;
+                stats.last_active = `Hari ini - ${String(simTime.getHours()).padStart(2, '0')}:${String(simTime.getMinutes()).padStart(2, '0')} WIB (Simulator)`;
+                
+                localStorage.setItem('bel_stats', JSON.stringify(stats));
+            } catch (e) {
+                console.warn("Failed to update stats in localStorage:", e);
+            }
+        }
+
+        // Blink RX/TX UART lines
+        function blinkSerialPins() {
+            let count = 0;
+            const interval = setInterval(() => {
+                const state = count % 2 === 0;
+                updatePinIndicator(simRxPin, state);
+                updatePinIndicator(simTxPin, state);
+                
+                const busyLed = document.getElementById('dfplayer-led');
+                if (busyLed) {
+                    if (state) busyLed.classList.add('active');
+                    else busyLed.classList.remove('active');
+                }
+                
+                count++;
+                if (count > 6) {
+                    clearInterval(interval);
+                    updatePinIndicator(simRxPin, false);
+                    updatePinIndicator(simTxPin, false);
+                    if (busyLed) busyLed.classList.add('active');
+                }
+            }, 150);
+        }
+
+        function updatePinBadges() {
+            const container = document.getElementById('pins-indicator-container');
+            if (!container) return;
+            
+            const pins = [
+                { name: 'D1', label: 'SCL' },
+                { name: 'D2', label: 'SDA' },
+                { name: simRxPin.toUpperCase(), label: 'RX' },
+                { name: simTxPin.toUpperCase(), label: 'TX' },
+                { name: simRelayPin.toUpperCase(), label: 'Relay' }
+            ];
+            
+            const uniquePins = [];
+            const seen = new Set();
+            pins.forEach(p => {
+                if (!seen.has(p.name)) {
+                    seen.add(p.name);
+                    uniquePins.push(p);
+                } else {
+                    const existing = uniquePins.find(ep => ep.name === p.name);
+                    if (existing) {
+                        existing.label += ` + ${p.label}`;
+                    }
+                }
+            });
+            
+            container.innerHTML = '';
+            uniquePins.forEach(p => {
+                const span = document.createElement('span');
+                span.id = `pin-led-${p.name.toLowerCase()}`;
+                span.className = 'badge bg-secondary font-monospace';
+                span.textContent = `${p.name} (${p.label}): LOW`;
+                container.appendChild(span);
+            });
+        }
+
+        function updatePinIndicator(pinName, state) {
+            const name = String(pinName).toUpperCase();
+            const badgeId = `pin-led-${name.toLowerCase()}`;
+            const el = document.getElementById(badgeId);
+            if (el) {
+                let labelParts = [];
+                if (name === 'D1') labelParts.push('SCL');
+                if (name === 'D2') labelParts.push('SDA');
+                if (name === simRxPin.toUpperCase()) labelParts.push('RX');
+                if (name === simTxPin.toUpperCase()) labelParts.push('TX');
+                if (name === simRelayPin.toUpperCase()) labelParts.push('Relay');
+                
+                const label = labelParts.length > 0 ? labelParts.join(' + ') : 'PIN';
+                
+                if (state) {
+                    el.className = 'badge bg-success font-monospace';
+                    el.textContent = `${name} (${label}): HIGH`;
+                } else {
+                    el.className = 'badge bg-secondary font-monospace';
+                    el.textContent = `${name} (${label}): LOW`;
+                }
+            }
+        }
+
+        function setRelayState(active) {
+            simRelayState = active;
+            
+            const relayLed = document.getElementById('relay-led');
+            if (relayLed) {
+                if (active) {
+                    relayLed.className = 'led led-green active position-absolute';
+                } else {
+                    relayLed.className = 'led led-red position-absolute';
+                }
+            }
+            
+            const switchVisual = document.getElementById('relay-switch-visual');
+            if (switchVisual) {
+                if (active) {
+                    switchVisual.style.transform = 'rotate(0deg)';
+                } else {
+                    switchVisual.style.transform = 'rotate(-25deg)';
+                }
+            }
+            
+            updatePinIndicator(simRelayPin, active);
+        }
+
+        function setSpeakerState(active) {
+            const speakerCone = document.getElementById('speaker-cone');
+            const dfplayerLed = document.getElementById('dfplayer-led');
+            
+            if (speakerCone) {
+                if (active) {
+                    speakerCone.classList.add('ringing');
+                } else {
+                    speakerCone.classList.remove('ringing');
+                }
+            }
+            
+            if (dfplayerLed) {
+                if (active) {
+                    dfplayerLed.classList.add('active');
+                } else {
+                    dfplayerLed.classList.remove('active');
+                }
+            }
+        }
+
+        // Audio tone synthesizer using Web Audio API
+        function playTone() {
+            try {
+                if (!simAudioCtx) {
+                    simAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                if (simAudioCtx.state === 'suspended') {
+                    simAudioCtx.resume();
+                }
+                
+                const volumeLevel = (simVolume !== undefined ? simVolume : 25) / 30 * 0.15;
+                if (volumeLevel <= 0) {
+                    logSerial('[AUDIO] Volume diatur ke 0 (Mute). Tidak ada suara keluar.', 'warn');
+                    return;
+                }
+                
+                const melody = [
+                    { f: 329.63, d: 0.5 },
+                    { f: 261.63, d: 0.5 },
+                    { f: 293.66, d: 0.5 },
+                    { f: 196.00, d: 0.8 },
+                    
+                    { f: 261.63, d: 0.5 },
+                    { f: 293.66, d: 0.5 },
+                    { f: 329.63, d: 0.5 },
+                    { f: 261.63, d: 0.8 }
+                ];
+                
+                let now = simAudioCtx.currentTime;
+                
+                melody.forEach(note => {
+                    const osc = simAudioCtx.createOscillator();
+                    const gain = simAudioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(simAudioCtx.destination);
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(note.f, now);
+                    
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(volumeLevel, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + note.d - 0.05);
+                    
+                    osc.start(now);
+                    osc.stop(now + note.d);
+                    
+                    now += note.d + 0.05;
+                });
+                
+            } catch (e) {
+                console.warn("Virtual Speaker Web Audio API failed:", e);
+            }
+        }
+
+        // Virtual Compiler compiler and validation
+        function compileAndLoadCode() {
+            const statusEl = document.getElementById('compiler-status');
+            const editorText = document.getElementById('code-editor-textarea').value;
+            
+            if (statusEl) {
+                statusEl.className = 'badge bg-warning font-monospace text-dark';
+                statusEl.textContent = 'COMPILING...';
+            }
+            
+            logSerial('[COMPILER] Memulai kompilasi virtual sketch...', 'info');
+            
+            setTimeout(() => {
+                const relayMatch = editorText.match(/#define\s+PIN_RELAY\s+(\w+)/);
+                const rxMatch = editorText.match(/#define\s+PIN_RX\s+(\w+)/);
+                const txMatch = editorText.match(/#define\s+PIN_TX\s+(\w+)/);
+                const volMatch = editorText.match(/myDFPlayer\.volume\(\s*(\d+)\s*\)/);
+                const durMatch = editorText.match(/ampOffTime\s*=\s*millis\(\)\s*\+\s*(\d+)/);
+                const wifiSSIDMatch = editorText.match(/wifi_ssid\[\d*\]\s*=\s*"([^"]+)"/);
+                
+                const newRelayPin = relayMatch ? relayMatch[1] : 'D7';
+                const newRxPin = rxMatch ? rxMatch[1] : 'D5';
+                const newTxPin = txMatch ? txMatch[1] : 'D6';
+                const newVolume = volMatch ? parseInt(volMatch[1]) : 25;
+                const newDuration = durMatch ? parseInt(durMatch[1]) : 45000;
+                const newWifiSSID = wifiSSIDMatch ? wifiSSIDMatch[1] : 'Bel_Sekolah_AP';
+                
+                logSerial('[COMPILER] Verifikasi syntax program: OK', 'success');
+                logSerial(`[COMPILER] Pin Terdefinisi: RELAY=${newRelayPin}, RX=${newRxPin}, TX=${newTxPin}`, 'info');
+                logSerial(`[COMPILER] Volume Audio: ${newVolume}/30`, 'info');
+                logSerial(`[COMPILER] Durasi Alarm: ${(newDuration/1000).toFixed(1)} detik`, 'info');
+                logSerial(`[COMPILER] WiFi SSID AP: "${newWifiSSID}"`, 'info');
+                
+                let hasWiringError = false;
+                
+                if (newRelayPin !== 'D7') {
+                    logSerial(`[WARN] Pin Relay diset ke ${newRelayPin} di program, tetapi sirkuit fisik terhubung ke D7!`, 'warn');
+                    hasWiringError = true;
+                }
+                if (newRxPin !== 'D5') {
+                    logSerial(`[WARN] Pin RX SoftwareSerial diset ke ${newRxPin} di program, tetapi sirkuit fisik terhubung ke D5!`, 'warn');
+                    hasWiringError = true;
+                }
+                if (newTxPin !== 'D6') {
+                    logSerial(`[WARN] Pin TX SoftwareSerial diset ke ${newTxPin} di program, tetapi sirkuit fisik terhubung ke D6!`, 'warn');
+                    hasWiringError = true;
+                }
+                
+                simRelayPin = newRelayPin;
+                simRxPin = newRxPin;
+                simTxPin = newTxPin;
+                simVolume = newVolume;
+                simAlarmDuration = newDuration;
+                simWifiSSID = newWifiSSID;
+                
+                updatePinBadges();
+                drawWires();
+                
+                if (hasWiringError) {
+                    logSerial('[COMPILER] Kompilasi berhasil dengan peringatan wiring sirkuit!', 'warn');
+                    statusEl.className = 'badge bg-danger font-monospace';
+                    statusEl.textContent = 'WARNING';
+                } else {
+                    logSerial('[COMPILER] Kompilasi berhasil! 0 Error, 0 Warning.', 'success');
+                    statusEl.className = 'badge bg-success font-monospace';
+                    statusEl.textContent = 'SUCCESS';
+                }
+                
+                logSerial('[COMPILER] Mengunduh binary ke memori flash NodeMCU (100%)...', 'info');
+                
+                if (simRunning) {
+                    toggleSimulation();
+                    setTimeout(toggleSimulation, 500);
+                }
+                
+            }, 1200);
+        }
+
+        // Reset virtual code editor
+        function resetDefaultCode() {
+            if (confirm('Apakah Anda yakin ingin mengembalikan kode ke bawaan pabrik?')) {
+                document.getElementById('code-editor-textarea').value = DEFAULT_INO_CODE;
+                logSerial('[SYSTEM] Kode di-reset ke default pabrik.', 'info');
+                
+                const statusEl = document.getElementById('compiler-status');
+                if (statusEl) {
+                    statusEl.className = 'badge bg-secondary font-monospace';
+                    statusEl.textContent = 'READY';
+                }
+            }
+        }
+
+        // Init on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            initSimulator();
+        });
+    </script>
+</body>
+</html>
